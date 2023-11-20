@@ -21,7 +21,7 @@ def app_root_path():
 env_paths = [Path(".env"), app_root_path() / "etc/environment", None]
 
 for env_path in env_paths:
-    print("Loading environment from " + str(env_path))
+    print(f"Loading environment from {str(env_path)}")
     load_dotenv(dotenv_path=env_path)
 
 
@@ -46,9 +46,7 @@ class EnvService:
     @staticmethod
     def save_path():
         share_dir = os.getenv("SHARE_DIR")
-        if share_dir is not None:
-            return Path(share_dir)
-        return app_root_path()
+        return Path(share_dir) if share_dir is not None else app_root_path()
 
     @staticmethod
     def find_shared_file(file_name):
@@ -119,16 +117,14 @@ class EnvService:
     @staticmethod
     def get_discord_token():
         try:
-            e2b_key = os.getenv("DISCORD_TOKEN")
-            return e2b_key
+            return os.getenv("DISCORD_TOKEN")
         except Exception:
             return None
 
     @staticmethod
     def get_openai_api_key():
         try:
-            openai_key = os.getenv("OPENAI_API_KEY")
-            return openai_key
+            return os.getenv("OPENAI_API_KEY")
         except Exception:
             return None
 

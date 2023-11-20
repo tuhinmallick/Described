@@ -12,7 +12,9 @@ class Check:
             if EnvService.get_admin_roles() == [None]:
                 admin_roles = ["admin"]
 
-            if not any(role.name.lower() in admin_roles for role in ctx.user.roles):
+            if all(
+                role.name.lower() not in admin_roles for role in ctx.user.roles
+            ):
                 await ctx.defer(ephemeral=True)
                 await ctx.respond(
                     f"You don't have permission, list of roles is {admin_roles}",

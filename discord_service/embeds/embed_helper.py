@@ -7,11 +7,8 @@ class EmbedStatics:
     def __init__(self):
         pass
 
-    def status_to_string(status):
-        if status:
-            return "enabled"
-        else:
-            return "disabled"
+    def status_to_string(self):
+        return "enabled" if self else "disabled"
 
     @staticmethod
     def build_status_display_embed(status):
@@ -38,8 +35,7 @@ class EmbedStatics:
     def build_status_set_failure_embed(message):
         embed = discord.Embed(
             title="Describer",
-            description=f"There was an error changing the image descriptions status for this server: "
-            + message,
+            description=f"There was an error changing the image descriptions status for this server: {message}",
             color=discord.Color.red(),
         )
         embed.set_thumbnail(url="https://i.imgur.com/hbdBZfG.png")
@@ -49,7 +45,7 @@ class EmbedStatics:
     def build_image_analysis_failure_embed(message):
         embed = discord.Embed(
             title="Describer",
-            description=f"There was an error describing the image sent: " + message,
+            description=f"There was an error describing the image sent: {message}",
             color=discord.Color.red(),
         )
         embed.set_thumbnail(url="https://i.imgur.com/hbdBZfG.png")
