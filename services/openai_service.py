@@ -36,19 +36,18 @@ class OpenAIExecutor:
         image_urls,
     ):
         messages = [{"role": "system", "content": self.ANALYSIS_PRETEXT}]
-        for image_url in image_urls:
-            messages.append(
-                {
-                    "role": "user",
-                    "content": [
-                        {
-                            "type": "image_url",
-                            "image_url": {"url": image_url, "detail": "high"},
-                        }
-                    ],
-                }
-            )
-
+        messages.extend(
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "image_url",
+                        "image_url": {"url": image_url, "detail": "high"},
+                    }
+                ],
+            }
+            for image_url in image_urls
+        )
         async with aiohttp.ClientSession(
             raise_for_status=False, timeout=aiohttp.ClientTimeout(total=300)
         ) as session:

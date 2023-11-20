@@ -75,10 +75,8 @@ class ImageService(discord.Cog, name="ImageService"):
     @discord.guild_only()
     async def described_command(self, ctx: discord.ApplicationContext, status: str):
         """Command handler. Given a string it generates an output that's fitting for image generation"""
-        if status == "on" or status == "off":
-            if await self.change_guild_status(
-                ctx.guild_id, True if status == "on" else False
-            ):
+        if status in {"off", "on"}:
+            if await self.change_guild_status(ctx.guild_id, status == "on"):
                 await ctx.respond(
                     embed=EmbedStatics.build_status_change_success_embed(
                         self.server_information[ctx.guild_id].status
@@ -111,17 +109,13 @@ class ImageService(discord.Cog, name="ImageService"):
         if message.type != discord.MessageType.default:
             return
 
-        # Check if the message is from a guild.
-        if not message.guild:
-            return
-
         if message.content.strip().startswith("~"):
             return
 
         if not self.server_information[message.guild.id].status:
             return
 
-        if not message.channel.name in self.allowed_channels:
+        if message.channel.name not in self.allowed_channels:
             return
 
         image_urls = []
@@ -132,7 +126,7 @@ class ImageService(discord.Cog, name="ImageService"):
                 if _file.content_type.startswith("image"):
                     image_urls.append(_file.url)
 
-        if len(image_urls) > 0:
+        if image_urls:
             print(
                 "Sending an image description request for message URL: "
                 + message.jump_url
@@ -146,7 +140,7 @@ class ImageService(discord.Cog, name="ImageService"):
 
             # Send an image description request
             for url in image_urls:
-                print("Processing " + str(url))
+                print(f"Processing {str(url)}")
                 try:
                     response = await self.openai_service.send_image_evaluation_request(
                         [url]
